@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../utils/jsonStore.jsx'
+import { formatSoles } from '../core/shared/currency.js'
 import { useStatus } from '../utils/status.jsx'
 import Modal from '../components/Modal.jsx'
 
@@ -63,7 +64,7 @@ export default function Contracts() {
                 <td>{c.id}</td>
                 <td>{c.entrenadorId}</td>
                 <td>{c.actividadId}</td>
-                <td>${c.honorarios}</td>
+                <td>{formatSoles(c.honorarios)}</td>
                 <td>{Math.round(c.retenciones * 100)}%</td>
                 <td>{Math.round(c.comisiones * 100)}%</td>
                 <td>{c.pagos.length}</td>

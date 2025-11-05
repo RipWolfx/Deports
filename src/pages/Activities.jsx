@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useStore } from '../utils/jsonStore.jsx'
+import { formatSoles } from '../core/shared/currency.js'
 import { useStatus } from '../utils/status.jsx'
 import Modal from '../components/Modal.jsx'
 
@@ -144,7 +145,7 @@ export default function Activities() {
               <tr key={a.id}>
                 <td><span className="cell-img"><img className="avatar" src={a.imagenData || a.imagen || '/vite.svg'} alt="act" /> {a.nombre}</span></td>
                 <td>{a.tipo}</td>
-                <td>${a.precio}</td>
+                <td>{formatSoles(a.precio)}</td>
                 <td>{a.cupos}</td>
                 <td>{a.modalidad}</td>
                 <td>{Array.isArray(a.calendario) ? a.calendario.join(', ') : ''}</td>

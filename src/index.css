@@ -276,5 +276,27 @@ body {
 .badge-danger { background: #fef2f2; color: #991b1b; border-color: #ef4444; }
 .badge-neutral { background: #f3f4f6; color: #374151; border-color: #9ca3af; }
 
+/* Gráficos simples: barras horizontales */
+.chart { margin-top: 8px; }
+.chart-title { font-weight: 600; margin-bottom: 6px; color: #333; }
+.chart-body { display: flex; flex-direction: column; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 160px 1fr auto; align-items: center; gap: 8px; }
+.bar-label { color: #555; }
+.bar-track { background: #f0f3f7; height: 8px; border-radius: 6px; overflow: hidden; }
+.bar { height: 100%; border-radius: 6px; transition: width .3s ease; }
+.bar-value { font-variant-numeric: tabular-nums; color: #333; }
+.summary-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+
 /* Tablas: estilo base ya presente; añadimos reforzadores claros */
 table th.center, table td.center { text-align: center; }
+
+/* Charts: barras horizontales sencillas para Reportes */
+.chart { margin-top: 8px; }
+.chart-title { font-weight: 600; margin-bottom: 6px; color: #333; }
+.chart-body { display: flex; flex-direction: column; gap: 8px; }
+.bar-row { display: grid; grid-template-columns: 160px 1fr auto; align-items: center; gap: 8px; }
+.bar-label { color: #555; }
+.bar-track { background: #f0f3f7; height: 8px; border-radius: 6px; overflow: hidden; }
+.bar { height: 100%; border-radius: 6px; transition: width .3s ease; }
+.bar-value { font-variant-numeric: tabular-nums; color: #333; }
+.summary-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }

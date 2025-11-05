@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useAuth, useStore } from '../utils/jsonStore.jsx'
+import { formatSoles } from '../core/shared/currency.js'
 import { useStatus } from '../utils/status.jsx'
 
 export default function Reservations() {
@@ -117,7 +118,11 @@ export default function Reservations() {
                   <td>{r.instalacion}</td>
                   <td>{r.fechaHora}</td>
                   <td><EstadoBadge estado={r.estado} /></td>
-                  <td>{r.pago?.monto} {r.pago?.ok ? 'OK' : 'FALLÓ'} {r.reembolso ? `— reembolso: ${r.reembolso}` : ''} {r.penalizacion ? `— penalización: ${r.penalizacion}` : ''}</td>
+                <td>
+                  {r.pago?.monto != null ? formatSoles(r.pago.monto) : '—'} {r.pago?.ok ? 'OK' : 'FALLÓ'}
+                  {r.reembolso ? ` — reembolso: ${formatSoles(r.reembolso)}` : ''}
+                  {r.penalizacion ? ` — penalización: ${formatSoles(r.penalizacion)}` : ''}
+                </td>
                   <td>
                     <div className="actions">
                       <button className="btn btn-secondary" onClick={() => cancelar(r.id)}>Cancelar</button>
