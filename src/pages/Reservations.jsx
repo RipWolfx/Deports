@@ -39,9 +39,16 @@ export default function Reservations() {
             <option>Cancha 2</option>
             <option>Sala Multiusos</option>
           </select>
+          <span className="hint">Recomendado: reserva con 48h de anticipación.</span>
         </label>
-        <label>Fecha y hora<input type="datetime-local" value={fechaHora} onChange={e => setFechaHora(e.target.value)} required /></label>
-        <label>Monto<input type="number" value={monto} onChange={e => setMonto(Number(e.target.value))} /></label>
+        <label>Fecha y hora
+          <input type="datetime-local" value={fechaHora} onChange={e => setFechaHora(e.target.value)} required />
+          <span className="hint">Formato local, se valida límite de 3 reservas por semana.</span>
+        </label>
+        <label>Monto
+          <input type="number" min="0" step="5" value={monto} onChange={e => setMonto(Number(e.target.value))} />
+          <span className="hint">Sugerencias: 20, 25, 30 según instalación.</span>
+        </label>
         <label>Pago exitoso?
           <input type="checkbox" checked={pagoOk} onChange={e => setPagoOk(e.target.checked)} />
         </label>

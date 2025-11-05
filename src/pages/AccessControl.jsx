@@ -22,6 +22,8 @@ export default function AccessControl() {
         <select value={zona} onChange={e => setZona(e.target.value)}>
           <option>Piscina</option>
           <option>Gimnasio</option>
+          <option>Cancha 1</option>
+          <option>Laboratorio</option>
           <option>Zona restringida</option>
         </select>
         <select value={tipo} onChange={e => setTipo(e.target.value)}>
@@ -31,6 +33,7 @@ export default function AccessControl() {
         </select>
         <button className="btn btn-primary">Registrar</button>
       </form>
+      <p className="hint">Consejo: marca "Denegado" para intentos sin autorización, se registrará una incidencia automática.</p>
       <h3 style={{ marginTop: 16 }}>Historial</h3>
       {accesos.length === 0 ? (
         <p className="empty-state">Sin registros de acceso aún.</p>

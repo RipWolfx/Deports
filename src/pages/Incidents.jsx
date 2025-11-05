@@ -7,18 +7,31 @@ export default function Incidents() {
   const store = useStore()
   const status = useStatus()
   const incidencias = store.getStore().incidencias
+  const [tipo, setTipo] = useState('accidente')
   const [detalle, setDetalle] = useState('')
   const [notificar, setNotificar] = useState(false)
   const registrar = (e) => {
     e.preventDefault()
-    store.registrarAccidente({ userId: currentUser.id, detalle, notificarFamilia: notificar })
-    status.success('Incidente registrado', detalle.slice(0, 40))
+    if (tipo === 'accidente') {
+      store.registrarAccidente({ userId: currentUser.id, detalle, notificarFamilia: notificar })
+    } else {
+      store.registrarIncidencia({ userId: currentUser.id, tipo, detalle, notificarFamilia: false })
+    }
+    status.success('Incidente registrado', `${tipo} — ${detalle.slice(0, 40)}`)
     setDetalle(''); setNotificar(false)
   }
   return (
     <div className="container">
       <h2 className="page-title">Incidencias</h2>
       <form onSubmit={registrar} className="form-grid" style={{ maxWidth: 600 }}>
+        <label>Tipo
+          <select value={tipo} onChange={e => setTipo(e.target.value)}>
+            <option value="accidente">Accidente</option>
+            <option value="sancion">Sanción</option>
+            <option value="acceso_denegado">Acceso denegado</option>
+          </select>
+          <span className="hint">Selecciona el tipo adecuado para clasificar el evento.</span>
+        </label>
         <label>Detalle<textarea value={detalle} onChange={e => setDetalle(e.target.value)} /></label>
         <label>
           <input type="checkbox" checked={notificar} onChange={e => setNotificar(e.target.checked)} /> Notificar a familia (si autorizado)

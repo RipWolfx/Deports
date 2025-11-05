@@ -21,23 +21,41 @@ const seedData = {
     { id: 'act-yoga-001', nombre: 'Yoga para Principiantes', tipo: 'clase', requisitos: [], modalidad: 'presencial', precio: 20, cupos: 25, calendario: ['2025-11-11', '2025-11-18'], imagen: '/vite.svg' },
     { id: 'act-fut-001', nombre: 'Fútbol 5 Intermedio', tipo: 'curso', requisitos: ['nivel:1'], modalidad: 'mixta', precio: 30, cupos: 18, calendario: ['2025-11-13', '2025-11-20'], imagen: '/assets/react.svg' },
   ],
-  reservas: [], // {id, userId, instalacion, fechaHora, estado: 'confirmada'|'pendiente'|'cancelada', pago: {monto, ok}, semanaISO}
-  accesos: [], // {id, userId, zona, tipo:'entrada'|'salida'|'denegado', fecha}
+  reservas: [
+    { id: 'res-s-001', userId: 'u-stu-001', instalacion: 'Cancha 1', fechaHora: '2025-11-10T10:00', estado: 'confirmada', pago: { monto: 30, ok: true } },
+    { id: 'res-s-002', userId: 'u-stu-001', instalacion: 'Sala Multiusos', fechaHora: '2025-11-11T15:00', estado: 'pendiente', pago: { monto: 20, ok: false } },
+    { id: 'res-d-001', userId: 'u-doc-001', instalacion: 'Cancha 2', fechaHora: '2025-11-09T18:30', estado: 'cancelada', pago: { monto: 25, ok: true }, reembolso: 12 },
+  ], // {id, userId, instalacion, fechaHora, estado: 'confirmada'|'pendiente'|'cancelada', pago: {monto, ok}, semanaISO}
+  accesos: [
+    { id: 'acc-001', userId: 'u-stu-001', zona: 'Piscina', tipo: 'entrada', fecha: '2025-11-05T09:00:00Z' },
+    { id: 'acc-002', userId: 'u-stu-001', zona: 'Zona restringida', tipo: 'denegado', fecha: '2025-11-05T09:05:00Z' },
+    { id: 'acc-003', userId: 'u-doc-001', zona: 'Gimnasio', tipo: 'salida', fecha: '2025-11-04T20:00:00Z' },
+  ], // {id, userId, zona, tipo:'entrada'|'salida'|'denegado', fecha}
   inventario: [
     { id: 'inv-bal-001', nombre: 'Balones fútbol', stock: 12, umbral: 10 },
     { id: 'inv-pla-001', nombre: 'Platos de agilidad', stock: 4, umbral: 5 },
   ],
   ordenesCompra: [], // {id, itemId, cantidad, fecha, proveedor, estado}
-  entrenamientos: [], // {id, userId, entrenadorId, evaluacionInicial, plan, registros:[]}
+  entrenamientos: [
+    { id: 'prog-demo-001', userId: 'u-stu-001', entrenadorId: 'ent-externo-001', evaluacionInicial: 'IMC normal, resistencia baja', plan: '3 sesiones/semana: cardio + técnica', registros: [
+      { fecha: '2025-11-02T10:00:00Z', nota: 'Prueba de Cooper', valor: 1800 },
+      { fecha: '2025-11-09T10:00:00Z', nota: 'Resistencia', valor: 15 }
+    ] },
+  ], // {id, userId, entrenadorId, evaluacionInicial, plan, registros:[]}
   contratos: [
     { id: 'ctr-sample-001', entrenadorId: 'ent-externo-001', actividadId: 'act-fit-001', honorarios: 100, retenciones: 0.1, comisiones: 0.05, pagos: [
       { id: 'pg-001', fecha: '2025-11-01T10:00:00Z', neto: 85 },
       { id: 'pg-002', fecha: '2025-11-03T10:00:00Z', neto: 85 },
     ] },
   ], // {id, entrenadorId, actividadId, honorarios, retenciones, comisiones, pagos:[]}
-  incidencias: [], // {id, tipo:'accidente'|'sancion'|'acceso_denegado', detalle, fecha, userId, legal:{reporteId}, notificacionFamilia: {activada, fecha}}
+  incidencias: [
+    { id: 'inc-acc-001', tipo: 'accidente', detalle: 'Torcedura leve en práctica', fecha: '2025-11-03T12:30:00Z', userId: 'u-stu-001', legal: { reporteId: 'rep-001' }, notificacionFamilia: { activada: true, fecha: '2025-11-03T12:35:00Z' } },
+    { id: 'inc-den-001', tipo: 'acceso_denegado', detalle: 'Intento de ingreso a zona restringida', fecha: '2025-11-05T09:05:00Z', userId: 'u-stu-001', legal: null, notificacionFamilia: null },
+  ], // {id, tipo:'accidente'|'sancion'|'acceso_denegado', detalle, fecha, userId, legal:{reporteId}, notificacionFamilia: {activada, fecha}}
   notificaciones: [], // {id, canal:'sms'|'email', para, asunto, mensaje, fecha, estado}
-  reportes: [],
+  reportes: [
+    { id: 'rpt-seed-2025-11', periodo: '2025-11', ingresosPorActividad: { 'Cancha 1': 30, 'Sala Multiusos': 20, 'Cancha 2': 25 }, ocupacionPorInstalacion: { 'Cancha 1': 1, 'Sala Multiusos': 1, 'Cancha 2': 1 }, sanciones: [{ reservaId: 'res-s-002', penalizacion: 0 }] }
+  ],
 }
 
 function loadStore() {
@@ -209,6 +227,15 @@ export function StoreProvider({ children }) {
     },
 
     // Incidencias y accidentes
+    registrarIncidencia: ({ userId, tipo, detalle, notificarFamilia }) => {
+      const id = 'inc-' + Math.random().toString(36).slice(2)
+      const base = { id, tipo, detalle, fecha: new Date().toISOString(), userId }
+      const incidencia = tipo === 'accidente'
+        ? { ...base, legal: { reporteId: 'rep-' + Math.random().toString(36).slice(2) }, notificacionFamilia: notificarFamilia ? { activada: true, fecha: new Date().toISOString() } : null }
+        : { ...base, legal: null, notificacionFamilia: null }
+      setStore(s => ({ ...s, incidencias: [...s.incidencias, incidencia] }))
+      return id
+    },
     registrarAccidente: ({ userId, detalle, notificarFamilia }) => {
       const id = 'inc-' + Math.random().toString(36).slice(2)
       const incidencia = { id, tipo: 'accidente', detalle, fecha: new Date().toISOString(), userId, legal: { reporteId: 'rep-' + Math.random().toString(36).slice(2) }, notificacionFamilia: notificarFamilia ? { activada: true, fecha: new Date().toISOString() } : null }

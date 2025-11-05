@@ -25,6 +25,7 @@ export default function Reports() {
       <form onSubmit={generar} className="form-row">
         <label>Periodo (YYYY-MM)
           <input value={periodo} onChange={e => setPeriodo(e.target.value)} />
+          <span className="hint">Ejemplos: 2025-11 (actual), 2025-10 (anterior)</span>
         </label>
         <button className="btn btn-primary">Generar</button>
       </form>

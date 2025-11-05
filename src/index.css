@@ -196,6 +196,10 @@ body {
   border-radius: 8px;
   padding: 8px 10px;
 }
+.hint {
+  font-size: 0.85em;
+  color: var(--color-muted);
+}
 
 .table {
   width: 100%;
