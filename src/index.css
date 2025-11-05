@@ -135,6 +135,15 @@ body {
   background: #fff;
 }
 .cell-img { display: inline-flex; align-items: center; gap: 8px; }
+/* Previsualización en formularios */
+.image-preview {
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: #fff;
+}
 
 /* Modal */
 .modal-backdrop {

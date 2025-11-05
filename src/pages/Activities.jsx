@@ -7,11 +7,32 @@ export default function Activities() {
   const store = useStore()
   const data = store.getStore().actividades
   const status = useStatus()
-  const [form, setForm] = useState({ nombre: '', tipo: 'curso', precio: 0, cupos: 0, requisitos: '', modalidad: 'mixta', calendario: '' })
+  const [form, setForm] = useState({ nombre: '', tipo: 'curso', precio: 0, cupos: 0, requisitos: '', modalidad: 'mixta', calendario: '', imagen: '', imagenData: '' })
   const [editId, setEditId] = useState(null)
-  const [edit, setEdit] = useState({ nombre: '', tipo: 'curso', precio: 0, cupos: 0, requisitos: '', modalidad: 'mixta', calendario: '', imagen: '' })
+  const [edit, setEdit] = useState({ nombre: '', tipo: 'curso', precio: 0, cupos: 0, requisitos: '', modalidad: 'mixta', calendario: '', imagen: '', imagenData: '' })
   const [showCreate, setShowCreate] = useState(false)
   const [showEdit, setShowEdit] = useState(false)
+  const createPreview = form.imagenData || form.imagen || '/vite.svg'
+  const editPreview = edit.imagenData || edit.imagen || '/vite.svg'
+
+  const handleCreateFile = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      setForm({ ...form, imagenData: reader.result })
+    }
+    reader.readAsDataURL(file)
+  }
+  const handleEditFile = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => {
+      setEdit({ ...edit, imagenData: reader.result })
+    }
+    reader.readAsDataURL(file)
+  }
   const submit = (e) => {
     e.preventDefault()
     const actividad = {
@@ -22,10 +43,12 @@ export default function Activities() {
       requisitos: form.requisitos ? form.requisitos.split(',').map(s => s.trim()) : [],
       modalidad: form.modalidad,
       calendario: form.calendario ? form.calendario.split(',').map(s => s.trim()) : [],
+      imagen: form.imagen || '',
+      imagenData: form.imagenData || '',
     }
     store.upsertActividad(actividad)
     status.success('Actividad guardada', actividad.nombre)
-    setForm({ nombre: '', tipo: 'curso', precio: 0, cupos: 0, requisitos: '', modalidad: 'mixta', calendario: '' })
+    setForm({ nombre: '', tipo: 'curso', precio: 0, cupos: 0, requisitos: '', modalidad: 'mixta', calendario: '', imagen: '', imagenData: '' })
     setShowCreate(false)
   }
   const startEdit = (a) => {
@@ -38,7 +61,8 @@ export default function Activities() {
       requisitos: Array.isArray(a.requisitos) ? a.requisitos.join(',') : '',
       modalidad: a.modalidad,
       calendario: Array.isArray(a.calendario) ? a.calendario.join(',') : '',
-      imagen: a.imagen || '/vite.svg'
+      imagen: a.imagen || '',
+      imagenData: a.imagenData || '',
     })
   }
   const applyEdit = (e) => {
@@ -51,7 +75,8 @@ export default function Activities() {
       requisitos: edit.requisitos ? edit.requisitos.split(',').map(s => s.trim()) : [],
       modalidad: edit.modalidad,
       calendario: edit.calendario ? edit.calendario.split(',').map(s => s.trim()) : [],
-      imagen: edit.imagen || '/vite.svg',
+      imagen: edit.imagen || '',
+      imagenData: edit.imagenData || '',
     }
     store.actualizarActividad({ id: editId, cambios })
     status.info('Actividad actualizada', cambios.nombre)
@@ -86,6 +111,18 @@ export default function Activities() {
             <option value="virtual">Virtual</option>
           </select></label>
           <label>Calendario (coma)<input value={form.calendario} onChange={e => setForm({ ...form, calendario: e.target.value })} /></label>
+          <div className="form-row">
+            <label style={{ flex: 1 }}>URL de imagen
+              <input value={form.imagen} onChange={e => setForm({ ...form, imagen: e.target.value })} placeholder="https://..." />
+            </label>
+            <label style={{ flex: 1 }}>Archivo
+              <input type="file" accept="image/*" onChange={handleCreateFile} />
+            </label>
+          </div>
+          <div className="form-row" style={{ alignItems: 'center', gap: 12 }}>
+            <span className="muted">Previsualización</span>
+            <img src={createPreview} alt="preview" className="image-preview" />
+          </div>
         </form>
       </Modal>
       <h3 style={{ marginTop: 24 }}>Listado</h3>
@@ -105,7 +142,7 @@ export default function Activities() {
           <tbody>
             {data.map(a => (
               <tr key={a.id}>
-                <td><span className="cell-img"><img className="avatar" src={a.imagen || '/vite.svg'} alt="act" /> {a.nombre}</span></td>
+                <td><span className="cell-img"><img className="avatar" src={a.imagenData || a.imagen || '/vite.svg'} alt="act" /> {a.nombre}</span></td>
                 <td>{a.tipo}</td>
                 <td>${a.precio}</td>
                 <td>{a.cupos}</td>
@@ -143,7 +180,18 @@ export default function Activities() {
           </select></label>
           <label>Requisitos<input value={edit.requisitos} onChange={e => setEdit({ ...edit, requisitos: e.target.value })} /></label>
           <label>Calendario<input value={edit.calendario} onChange={e => setEdit({ ...edit, calendario: e.target.value })} /></label>
-          <label>Imagen<input value={edit.imagen} onChange={e => setEdit({ ...edit, imagen: e.target.value })} placeholder="/vite.svg" /></label>
+          <div className="form-row">
+            <label style={{ flex: 1 }}>URL de imagen
+              <input value={edit.imagen} onChange={e => setEdit({ ...edit, imagen: e.target.value })} placeholder="https://..." />
+            </label>
+            <label style={{ flex: 1 }}>Archivo
+              <input type="file" accept="image/*" onChange={handleEditFile} />
+            </label>
+          </div>
+          <div className="form-row" style={{ alignItems: 'center', gap: 12 }}>
+            <span className="muted">Previsualización</span>
+            <img src={editPreview} alt="preview" className="image-preview" />
+          </div>
         </form>
       </Modal>
     </div>
