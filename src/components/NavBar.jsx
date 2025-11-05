@@ -1,12 +1,18 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { useAuth } from '../utils/jsonStore.jsx'
+import { useAuth, useStore } from '../utils/jsonStore.jsx'
 
 export default function NavBar() {
   const { currentUser, logout } = useAuth()
+  const store = useStore()
   const navigate = useNavigate()
   const handleLogout = () => {
     logout()
     navigate('/login')
+  }
+  const handleReset = () => {
+    if (window.confirm('¿Restablecer datos de demostración?')) {
+      store.resetStore()
+    }
   }
   return (
     <nav className="nav">
@@ -27,6 +33,7 @@ export default function NavBar() {
         {currentUser ? (
           <>
             <span>Hola, {currentUser.nombre} ({currentUser.rol})</span>
+            <button className="btn btn-secondary" onClick={handleReset}>Reset datos</button>
             <button className="btn btn-secondary" onClick={handleLogout}>Salir</button>
           </>
         ) : (

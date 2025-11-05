@@ -23,6 +23,7 @@ export default function Incidents() {
   return (
     <div className="container">
       <h2 className="page-title">Incidencias</h2>
+      <p className="subtitle">Registra accidentes, sanciones o accesos denegados para llevar control y reportes.</p>
       <form onSubmit={registrar} className="form-grid" style={{ maxWidth: 600 }}>
         <label>Tipo
           <select value={tipo} onChange={e => setTipo(e.target.value)}>
@@ -43,6 +44,15 @@ export default function Incidents() {
         <p className="empty-state">Aún no hay incidencias registradas.</p>
       ) : (
         <div className="table-responsive">
+          <div className="table-caption">
+            {(() => {
+              const tot = incidencias.length
+              const acc = incidencias.filter(i => i.tipo === 'accidente').length
+              const sanc = incidencias.filter(i => i.tipo === 'sancion').length
+              const den = incidencias.filter(i => i.tipo === 'acceso_denegado').length
+              return <span>Totales: {tot} · Accidentes: {acc} · Sanciones: {sanc} · Accesos denegados: {den}</span>
+            })()}
+          </div>
           <table className="table">
             <thead>
               <tr>
@@ -57,10 +67,18 @@ export default function Incidents() {
               {incidencias.slice().reverse().map(i => (
                 <tr key={i.id}>
                   <td>{i.fecha}</td>
-                  <td>{i.tipo}</td>
+                  <td>
+                    {i.tipo === 'accidente' ? (
+                      <span className="badge badge-warning">accidente</span>
+                    ) : i.tipo === 'sancion' ? (
+                      <span className="badge badge-neutral">sanción</span>
+                    ) : (
+                      <span className="badge badge-danger">acceso denegado</span>
+                    )}
+                  </td>
                   <td>{i.detalle}</td>
                   <td>{i.legal?.reporteId || 'N/A'}</td>
-                  <td>{i.notificacionFamilia?.activada ? 'Notificada' : '—'}</td>
+                  <td>{i.notificacionFamilia?.activada ? <span className="badge badge-info">Notificada</span> : <span className="badge badge-neutral">—</span>}</td>
                 </tr>
               ))}
             </tbody>

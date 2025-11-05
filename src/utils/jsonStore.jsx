@@ -84,6 +84,16 @@ export function StoreProvider({ children }) {
 
   const api = useMemo(() => ({
     getStore: () => store,
+    resetStore: () => {
+      setStore(s => {
+        const uid = s?.sesiones?.currentUserId
+        const next = { ...seedData }
+        if (uid && next.users.find(u => u.id === uid)) {
+          next.sesiones.currentUserId = uid
+        }
+        return next
+      })
+    },
     // Usuarios y auth
     register: ({ nombre, email, pass, categoria }) => {
       if (store.users.find(u => u.email === email)) throw new Error('Email ya registrado')
